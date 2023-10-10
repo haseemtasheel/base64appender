@@ -52,6 +52,10 @@
     function handleInitialText() {
         document.getElementById("initialtextareanormal").value = atob(document.getElementById("initialtextarea").value)
     }
+
+    function copyResult() {
+      navigator.clipboard.writeText(document.getElementById("resultingtextarea").value)
+    }
   </script>
    <body>
       <h1>Base64 Appender</h1>
@@ -72,6 +76,7 @@
         <div>
             <h5>Resulting Base64</h5>
             <textarea id="resultingtextarea" class="inputarea" readonly></textarea>
+            <button onclick="copyResult()">Copy</button>
         </div>
         <div>
             <h5>Resulting Text</h5>
