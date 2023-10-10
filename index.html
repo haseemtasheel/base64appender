@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-US" data-theme="light">
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"/>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="HTML Head Elements"/>
+    <meta name="author" content="Justine Evans"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Base64 Converter</title>
+    <style>
+      body {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #contentarea {
+        display: flex;
+        width: 90%;
+        justify-content: space-around;
+      }
+
+      .inputarea {
+        height: 80vh;
+
+      }
+
+      #middlearea {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    </style>
+  </head>
+   
+  <script>
+    function run() {
+        const initialbase64 = document.getElementById("initialtextarea").value
+        const textToBeAdded = document.getElementById("texttobeadded").value
+        try {
+            const encodedResult = btoa(atob(initialbase64) + "," + textToBeAdded)
+            document.getElementById("resultingtextarea").value = encodedResult
+            document.getElementById("resultingtextareanormal").value = atob(encodedResult)
+        } catch(err) {
+            document.getElementById("resultingtextarea").value = err.message
+            throw err
+        }
+        
+    }
+
+    function handleInitialText() {
+        document.getElementById("initialtextareanormal").value = atob(document.getElementById("initialtextarea").value)
+    }
+  </script>
+   <body>
+      <h1>Base64 Appender</h1>
+      <div id="contentarea">
+        <div>
+            <h5>Initial Base64</h5>
+            <textarea onchange="handleInitialText()" id="initialtextarea" class="inputarea"></textarea>
+        </div>
+        <div>
+            <h5>Initial Text</h5>
+            <textarea id="initialtextareanormal" class="inputarea" disabled></textarea>
+        </div>
+        <div id="middlearea">
+            <h5>Adding Text</h5>
+            <input id="texttobeadded"></input>
+            <button onclick="run()">Append</button>
+        </div>
+        <div>
+            <h5>Resulting Base64</h5>
+            <textarea id="resultingtextarea" class="inputarea" disabled></textarea>
+        </div>
+        <div>
+            <h5>Resulting Text</h5>
+            <textarea id="resultingtextareanormal" class="inputarea" disabled></textarea>
+        </div>
+
+      </div>
+      
+   </body>
+
+</html>
