@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en-US" data-theme="light">
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"/>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="HTML Head Elements"/>
+    <meta name="author" content="Justine Evans"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Hash Partial Finder</title>
+    <style>
+      body {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #contentarea {
+        display: flex;
+        width: 90%;
+        justify-content: space-around;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+   
+  <script>
+    function run() {
+        const partialHash = document.getElementById("initialtextarea").value
+        const hashTextList = document.getElementById("initialtextareanormal").value
+        if(partialHash && hashTextList && partialHash != "" && hashTextList != "") {
+          try {
+            console.log("Converting Base64 List into Normal Text")
+            const listOfText = atob(hashTextList).split(",")
+            console.log(JSON.stringify(listOfText))
+            listOfText.forEach((item, index) => digestMessage(item).then((digestHex) => {
+              if(digestHex.includes(partialHash)){
+                document.getElementById("resultingtextareanormal").value =  listOfText[index]
+              }
+            }))
+          } catch(err) {
+              document.getElementById("resultingtextareanormal").value = err.message
+              throw err
+          }
+        }
+        
+    }
+
+    async function digestMessage(message) {
+      const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
+      const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8); // hash the message
+      const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+      const hashHex = hashArray
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join(""); // convert bytes to hex string
+      return hashHex;
+    }
+
+
+    function handleInitialText() {
+        document.getElementById("initialtextareanormal").value = atob(document.getElementById("initialtextarea").value)
+    }
+
+    function copyResult() {
+      navigator.clipboard.writeText(document.getElementById("resultingtextarea").value)
+    }
+  </script>
+   <body>
+      <h1>Find the Partial of Hash from Base64 List (That is Seperated by ,)</h1>
+      <div id="contentarea">
+        <div style="display: flex; justify-content: space-around;">
+          <div style="width: 100%;">
+              <h5>Partial Hash</h5>
+              <textarea id="initialtextarea" class="inputarea"></textarea>
+          </div>
+          <div style="width: 100%;">
+              <h5>Base64 of List of Text seprated by ,</h5>
+              <textarea id="initialtextareanormal" class="inputarea"></textarea>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-around;">
+          <div style="width: 100%;">
+              <h5>Result</h5>
+              <textarea id="resultingtextareanormal" class="inputarea" readonly></textarea>
+          </div>
+        </div>
+        <button onclick="run()">Find the partial</button>
+
+      </div>
+      
+   </body>
+
+</html>
